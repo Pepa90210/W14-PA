@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Redirect, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 
 const COLORS = [
   "red",
@@ -17,24 +17,13 @@ function FruitForm({ fruits }) {
   const [color, setColor] = useState('red')
   const [seeds, setSeeds] = useState('yes')
   const [validationErrors, setValidationErrors] = useState([]);
-  // const [hasSubmitted, setHasSubmitted] = useState(false);
 
   useEffect(() => {
     const errors = [];
-    if (name.length < 3) {
-      errors.push("Name must be 3 or more characters");
-    }
-    if (name.length > 20) {
-      errors.push("Name must be 20 characters or less");
-    }
-    fruits.forEach((fruit) => {
-      if (fruit.name === name) {
-        errors.push("Name already exists.");
-      }
-    });
-    if(sweetness < 1 || sweetness > 10){
-        errors.push("Sweetness must be between 1 and 10")
-    }
+    if (name.length < 3) errors.push("Name must be 3 or more characters");
+    if (name.length > 20) errors.push("Name must be 20 characters or less");
+    if (fruits.map((fruit) => fruit.name).includes(name)) errors.push("Name already exists.");
+    if(sweetness < 1 || sweetness > 10) errors.push("Sweetness must be between 1 and 10")
     setValidationErrors(errors);
   }, [name, sweetness]);
 
@@ -42,10 +31,6 @@ function FruitForm({ fruits }) {
   const onSubmit = (e) => {
     // Prevent the default form behavior so the page doesn't reload.
     e.preventDefault();
-
-    // setHasSubmitted(true);
-    // if (validationErrors.length) return alert(`Cannot Submit`);
-
     // Create a new object for the contact us information.
     const fruitInformation = {
       name,
@@ -63,9 +48,7 @@ function FruitForm({ fruits }) {
     setColor("red");
     setSeeds("yes");
     setValidationErrors([]);
-    // setHasSubmitted(false);
 
-    // return <Redirect to='/' />
     history.push('/')
   };
 
@@ -77,8 +60,8 @@ function FruitForm({ fruits }) {
       <h2>Enter a Fruit</h2>
       {validationErrors.length > 0 &&
       <ul className="errors">
-        {validationErrors.map((error) => (
-          <li key={error}>{error}</li>
+        {validationErrors.map((error, i) => (
+          <li key={i}>{error}</li>
          ))}
       </ul>
       }
@@ -138,7 +121,7 @@ function FruitForm({ fruits }) {
       </label>
       <button
         type="submit"
-        disabled={validationErrors.length > 0 ? true : false }
+        disabled={validationErrors.length > 0}
       >
         Submit Fruit
       </button>

@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
 
+
+
 function FruitsIndex({ fruits }) {
   return (
     <div className="fruits-index">
